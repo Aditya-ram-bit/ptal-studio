@@ -1,10 +1,1 @@
---- 
-title: PTAL Studio 
-emoji: ??? 
-colorFrom: purple 
-colorTo: blue 
-sdk: streamlit 
-sdk_version: "1.32.0" 
-app_file: app_canvas.py 
-pinned: false 
---- 
+---`ntitle: PTAL Studio`nemoji: ??`ncolorFrom: purple`ncolorTo: blue`nsdk: streamlit`nsdk_version: 1.32.0`napp_file: app_canvas.py`npinned: false`n---

@@ -1,0 +1,9 @@
+streamlit
+duckdb
+pandas
+numpy
+geopandas
+h3==3.7.7
+pydeck
+shapely
+requests

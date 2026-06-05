@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>pydeck</title>
+        <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.13.0/mapbox-gl.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.14.0/dist/maplibre-gl.css" />
+    <script src='https://cdn.jsdelivr.net/npm/@deck.gl/jupyter-widget@~9.2.*/dist/index.js'></script>
+    <link rel="stylesheet" href=https://cdn.jsdelivr.net/npm/@deck.gl/widgets@~9.2.*/dist/stylesheet.css />
+    <style>
+    body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+#deck-container {
+  width: 100vw;
+  height: 100vh;
+}
+
+#deck-container canvas {
+  z-index: 1;
+  background: none;
+}
+
+#deck-container .error_text {
+  color: red;
+  background: none;
+  position: absolute;
+  z-index: 100;
+}
+    </style>
+  </head>
+  <body>
+    <div id="deck-container">
+    </div>
+  
+<style>
+#ptal-ctrl { position:absolute; top:16px; right:16px; background:rgba(30,41,59,0.95); border:1px solid #475569; border-radius:10px; padding:14px 18px; font-family:-apple-system,sans-serif; font-size:13px; color:#F8F9FA; z-index:99999; min-width:230px; box-shadow:0 4px 12px rgba(0,0,0,0.3); }
+#ptal-ctrl .ctrl-title { font-size:11px; font-weight:700; text-transform:uppercase; color:#94A3B8; margin-bottom:10px; padding-bottom:8px; border-bottom:1px solid #334155; }
+#ptal-ctrl label { display:flex; align-items:center; gap:10px; cursor:pointer; margin-bottom:7px; }
+#ptal-ctrl input[type=checkbox] { width:15px; height:15px; accent-color:#38BDF8; cursor:pointer; }
+.ctrl-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+#ptal-legend { position:absolute; bottom:30px; left:16px; background:rgba(30,41,59,0.95); border:1px solid #475569; border-radius:10px; padding:12px 16px; font-family:-apple-system,sans-serif; font-size:11px; color:#F8F9FA; z-index:99999; box-shadow:0 4px 12px rgba(0,0,0,0.3); }
+.leg-row { display:flex; align-items:center; gap:8px; margin-bottom:4px; }
+.leg-sw { width:13px; height:13px; border-radius:2px; flex-shrink:0; }
+</style>
+<div id="ptal-ctrl">
+  <div class="ctrl-title">Layer Controls</div>
+  <label><input type="checkbox" id="chk-hex" checked> PTAL Hex Grid</label>
+  <label><input type="checkbox" id="chk-bus" checked><span class="ctrl-dot" style="background:#0064DC"></span> Bus Stop Nodes</label>
+  <label><input type="checkbox" id="chk-metro-stops" checked><span class="ctrl-dot" style="background:#DC1E3C"></span> Metro Stop Nodes</label>
+  <label><input type="checkbox" id="chk-rail-stops" checked><span class="ctrl-dot" style="background:#8C1EC8"></span> Rail Stop Nodes</label>
+  <label><input type="checkbox" id="chk-metro" checked><span style="display:inline-block;width:20px;height:3px;background:#DC1E3C;border-radius:2px"></span> Metro Lines</label>
+  <label><input type="checkbox" id="chk-rail" checked><span style="display:inline-block;width:20px;height:3px;background:#8C1EC8;border-radius:2px"></span> Rail Lines</label>
+  <label><input type="checkbox" id="chk-ferry" checked><span style="display:inline-block;width:20px;height:3px;background:#00A0DC;border-radius:2px"></span> Ferry/Waterways</label>
+  <label><input type="checkbox" id="chk-tram" checked><span style="display:inline-block;width:20px;height:3px;background:#00BEA0;border-radius:2px"></span> Tram / LRT</label>
+</div>
+<div id="ptal-legend">
+  <div class="leg-row"><div class="leg-sw" style="background:#780404"></div> 0 — No access</div>
+  <div class="leg-row"><div class="leg-sw" style="background:#E60000"></div> 1 — Very poor</div>
+  <div class="leg-row"><div class="leg-sw" style="background:#FF4500"></div> 2</div>
+  <div class="leg-row"><div class="leg-sw" style="background:#FF8C00"></div> 3</div>
+  <div class="leg-row"><div class="leg-sw" style="background:#FFD700"></div> 4</div>
+  <div class="leg-row"><div class="leg-sw" style="background:#EAEA00"></div> 5</div>
+  <div class="leg-row"><div class="leg-sw" style="background:#9BE100"></div> 6</div>
+  <div class="leg-row"><div class="leg-sw" style="background:#32CD32"></div> 7</div>
+  <div class="leg-row"><div class="leg-sw" style="background:#00BD00"></div> 8</div>
+  <div class="leg-row"><div class="leg-sw" style="background:#005A00"></div> 9 — Best</div>
+</div>
+<script>
+(function() {
+  function waitForDeck() {
+    var inst = window.__ptal_deck;
+    if (!inst || !inst.props || !inst.props.layers || inst.props.layers.length === 0) {
+      setTimeout(waitForDeck, 150); return;
+    }
+    var baseLayers = inst.props.layers.slice();
+    function applyVis() {
+      var v = {
+        hex:         document.getElementById('chk-hex').checked,
+        bus:         document.getElementById('chk-bus').checked,
+        metroStops:  document.getElementById('chk-metro-stops').checked,
+        railStops:   document.getElementById('chk-rail-stops').checked,
+        metro:       document.getElementById('chk-metro').checked,
+        rail:        document.getElementById('chk-rail').checked,
+        ferry:       document.getElementById('chk-ferry').checked,
+        tram:        document.getElementById('chk-tram').checked
+      };
+      inst.setProps({ layers: baseLayers.map(function(l) {
+        if (l.id === 'ptal_hex')      return l.clone({ visible: v.hex });
+        if (l.id === 'bus_stops')     return l.clone({ visible: v.bus });
+        if (l.id === 'metro_stops')   return l.clone({ visible: v.metroStops });
+        if (l.id === 'rail_stops')    return l.clone({ visible: v.railStops });
+        if (l.id === 'metro_lines')   return l.clone({ visible: v.metro });
+        if (l.id === 'rail_lines')    return l.clone({ visible: v.rail });
+        if (l.id === 'ferry_lines')   return l.clone({ visible: v.ferry });
+        if (l.id === 'tram_lines')    return l.clone({ visible: v.tram });
+        return l;
+      })});
+    }
+    ['chk-hex','chk-bus','chk-metro-stops','chk-rail-stops',
+     'chk-metro','chk-rail','chk-ferry','chk-tram'].forEach(function(id) {
+      document.getElementById(id).addEventListener('change', applyVis);
+    });
+  }
+  setTimeout(waitForDeck, 300);
+})();
+</script>
+
+</body>
+  <script>
+    const container = document.getElementById('deck-container');
+    const jsonInput = {
+  "initialViewState": {
+    "latitude": 20.5937,
+    "longitude": 78.9629,
+    "zoom": 5
+  },
+  "layers": [],
+  "mapProvider": "carto",
+  "mapStyle": "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
+  "views": [
+    {
+      "@@type": "MapView",
+      "controller": true
+    }
+  ]
+};
+    const tooltip = {'html': "<div style='font-family:sans-serif;font-size:12px;background:#fff;color:#222;padding:8px;border-radius:6px;'><b>AI Score:</b> {AI}<br/><b>PTAL:</b> {PTAL}</div>"};
+    const customLibraries = null;
+    const configuration = null;
+
+    window.__ptal_deck = null;
+    const deckInstance = createDeck({
+                  container,
+      jsonInput,
+      tooltip,
+      customLibraries,
+      configuration,
+          });
+    window.__ptal_deck = deckInstance;
+
+  </script>
+</html>

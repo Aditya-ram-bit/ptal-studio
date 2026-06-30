@@ -1,4 +1,4 @@
-os, sys, tempfile, requests, re
+import os, sys, tempfile, requests, re
 
 # ── Paths — relative so works locally AND on Hugging Face ──────────────────
 BASE_DIR    = os.path.dirname(os.path.abspath(__file__))

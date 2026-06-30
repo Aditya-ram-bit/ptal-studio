@@ -1,4 +1,4 @@
-import os, sys, tempfile, requests, re
+os, sys, tempfile, requests, re
 
 # ── Paths — relative so works locally AND on Hugging Face ──────────────────
 BASE_DIR    = os.path.dirname(os.path.abspath(__file__))
@@ -21,12 +21,9 @@ st.set_page_config(
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
-
 html, body, [class*="css"] { font-family: 'DM Sans', sans-serif !important; }
-
 .stApp { background: #12101A !important; color: #D4CCF0 !important; }
 [data-testid="stSidebar"] { background: #1A1726 !important; border-right: 1px solid #2A2540 !important; }
-
 @media (prefers-color-scheme: light) {
     .stApp { background: #F7F4FD !important; color: #3A3060 !important; }
     [data-testid="stSidebar"] { background: #EEE9FA !important; border-right: 1px solid #DDD6F5 !important; }
@@ -38,21 +35,17 @@ html, body, [class*="css"] { font-family: 'DM Sans', sans-serif !important; }
     [data-testid="stFileUploadDropzone"] * { color: #7868AA !important; }
     .stButton > button { color: #3A3060 !important; }
 }
-
 h1 { font-family:'Inter',sans-serif !important; font-weight:600 !important; font-size:24px !important; color:#C4B6F0 !important; letter-spacing:-0.4px; }
 h2,h3 { font-family:'Inter',sans-serif !important; font-weight:500 !important; font-size:15px !important; color:#A090D8 !important; }
 .stCaption, small { font-size:12px !important; color:#6E5FA8 !important; }
-
 [data-testid="stSidebar"] label,
 [data-testid="stSidebar"] p,
 [data-testid="stSidebar"] span { font-size:13px !important; font-weight:400 !important; color:#B8AEDC !important; }
 [data-testid="stSidebar"] h1,
 [data-testid="stSidebar"] h2,
 [data-testid="stSidebar"] h3 { font-family:'Inter',sans-serif !important; font-weight:500 !important; font-size:13.5px !important; color:#C8BFEA !important; letter-spacing:0.4px; text-transform:uppercase; }
-
 .stButton > button { width:100%; background:linear-gradient(160deg,#3B2E68 0%,#4E3E80 100%) !important; color:#DDD4FF !important; border:1px solid #5A4A90 !important; border-radius:10px !important; padding:11px 20px !important; font-family:'Inter',sans-serif !important; font-weight:500 !important; font-size:13px !important; letter-spacing:0.3px; transition:all 0.18s ease !important; box-shadow:0 2px 10px rgba(100,80,180,0.3) !important; }
 .stButton > button:hover { background:linear-gradient(160deg,#4A3A78 0%,#5E4E92 100%) !important; box-shadow:0 4px 16px rgba(120,100,200,0.45) !important; transform:translateY(-1px); }
-
 [data-testid="stFileUploadDropzone"] { background:#1E1A2E !important; border:1.5px dashed #3E3460 !important; border-radius:12px !important; }
 [data-testid="stFileUploadDropzone"] * { color:#7868A8 !important; font-size:12.5px !important; }
 [data-baseweb="slider"] [role="slider"] { background:#8070C0 !important; border-color:#9080D0 !important; }
@@ -63,7 +56,6 @@ hr { border-color:#2A2440 !important; margin:14px 0 !important; }
 ::-webkit-scrollbar-track { background:transparent; }
 ::-webkit-scrollbar-thumb { background:#3E3460; border-radius:4px; }
 ::-webkit-scrollbar-thumb:hover { background:#504080; }
-
 /* URL input box */
 [data-testid="stTextInput"] input {
     background:#1E1A2E !important;

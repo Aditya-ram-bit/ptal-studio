@@ -181,4 +181,3 @@ def build_grid(zip_paths: list, place_name: str = None) -> tuple:
         rows.append({"hex_id": h_id, "poi_lat": lat, "poi_lon": lon})
 
     return stops_gdf, pd.DataFrame(rows)
-
